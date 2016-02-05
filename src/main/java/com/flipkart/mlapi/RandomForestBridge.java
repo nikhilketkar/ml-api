@@ -4,6 +4,7 @@ import java.util.Stack;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Map;
+import java.io.IOException;
 
 import org.apache.spark.mllib.tree.model.DecisionTreeModel;
 import org.apache.spark.mllib.tree.model.Node;
@@ -16,10 +17,6 @@ import scala.collection.immutable.List;
 import com.fasterxml.jackson.databind.ObjectMapper;    
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import org.apache.spark.ml.feature.StringIndexerModel;
-
-
-import java.lang.reflect.Method;
 
 public class RandomForestBridge {
 
@@ -164,7 +161,7 @@ public class RandomForestBridge {
         return mapper.writeValueAsString(randomForestInfo);
     }
     
-    public void load(String rep) throws java.io.IOException {
+    public void load(String rep) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         currRandomForestInfo = mapper.readValue(rep, RandomForestInfo.class);
     }
