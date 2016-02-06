@@ -25,26 +25,26 @@ public class RandomForestBridgeTest extends TestCase {
 
     public void testRandomForestBridge()
     {
-        // SparkConf sparkConf = new SparkConf();
-        // String master = "local[1]";
-        // sparkConf.setMaster(master);
-        // sparkConf.setAppName("Local Spark Unit Test");
-        // JavaSparkContext sc = new JavaSparkContext(new SparkContext(sparkConf));
+        SparkConf sparkConf = new SparkConf();
+        String master = "local[1]";
+        sparkConf.setMaster(master);
+        sparkConf.setAppName("Local Spark Unit Test");
+        JavaSparkContext sc = new JavaSparkContext(new SparkContext(sparkConf));
 
 
-        // Integer numClasses = 7;
-        // HashMap<Integer, Integer> categoricalFeaturesInfo = new HashMap<Integer, Integer>();
-        // Integer numTrees = 3; // Use more in practice.
-        // String featureSubsetStrategy = "auto"; // Let the algorithm choose.
-        // String impurity = "gini";
-        // Integer maxDepth = 5;
-        // Integer maxBins = 32;
-        // Integer seed = 12345;
+        Integer numClasses = 7;
+        HashMap<Integer, Integer> categoricalFeaturesInfo = new HashMap<Integer, Integer>();
+        Integer numTrees = 3; // Use more in practice.
+        String featureSubsetStrategy = "auto"; // Let the algorithm choose.
+        String impurity = "gini";
+        Integer maxDepth = 5;
+        Integer maxBins = 32;
+        Integer seed = 12345;
        
-        // String datapath = "file:///Users/nikhil.ketkar/Desktop/segment.libsvm.txt";
-        // JavaRDD<LabeledPoint> data = MLUtils.loadLibSVMFile(sc.sc(), datapath).toJavaRDD();
-        // RandomForestModel model = RandomForest.trainClassifier(data, numClasses, categoricalFeaturesInfo, numTrees,
-        //                                                        featureSubsetStrategy, impurity, maxDepth, maxBins, seed);
+        String datapath = "file:///Users/nikhil.ketkar/Desktop/segment.libsvm.txt";
+        JavaRDD<LabeledPoint> data = MLUtils.loadLibSVMFile(sc.sc(), datapath).toJavaRDD();
+        RandomForestModel model = RandomForest.trainClassifier(data, numClasses, categoricalFeaturesInfo, numTrees,
+                                                               featureSubsetStrategy, impurity, maxDepth, maxBins, seed);
         assertTrue(true);
         
     }
