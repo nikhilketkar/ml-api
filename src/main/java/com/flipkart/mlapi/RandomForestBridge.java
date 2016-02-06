@@ -1,22 +1,25 @@
 package com.flipkart.mlapi;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Stack;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.Map;
-import java.io.IOException;
+import java.util.List;
 
+import com.google.gson.Gson;
 import org.apache.spark.mllib.tree.model.DecisionTreeModel;
 import org.apache.spark.mllib.tree.model.Node;
 import org.apache.spark.mllib.tree.model.RandomForestModel;
 import org.apache.spark.mllib.tree.configuration.Algo;
 import org.apache.spark.mllib.tree.configuration.FeatureType;
 import org.apache.spark.mllib.tree.model.Split;
-import scala.collection.immutable.List;
+import org.codehaus.jackson.annotate.JsonCreator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;    
 import com.fasterxml.jackson.core.JsonProcessingException;
-
+import scala.collection.immutable.Range;
+import scala.collection.JavaConversions;
 
 public class RandomForestBridge {
 
@@ -28,7 +31,10 @@ public class RandomForestBridge {
         public double threshold;
         public double predict;
         public double probability;
-        public List<Double> categories;
+        public ArrayList<Double> categories;
+        public NodeInfo() {
+
+        }
     }
 
     private class TreeInfo {
@@ -36,11 +42,17 @@ public class RandomForestBridge {
         public HashMap<Integer, Integer> leftChildMap = new HashMap<Integer, Integer>();
         public HashMap<Integer, Integer> rightChildMap = new HashMap<Integer, Integer>();
         public HashMap<Integer, NodeInfo> nodeInfo = new HashMap<Integer, NodeInfo>();
+        public TreeInfo() {
+
+        }
     }
 
     private class RandomForestInfo {
         public String algorithm;
         public ArrayList<TreeInfo> trees = new ArrayList<TreeInfo>();
+        public RandomForestInfo() {
+
+        }
     }
 
     RandomForestInfo currRandomForestInfo;
@@ -52,13 +64,16 @@ public class RandomForestBridge {
         if (node.split().nonEmpty()) {
             Split split = node.split().get();
             nodeInfo.feature = split.feature();
+            nodeInfo.threshold = split.threshold();
             if (split.featureType().equals(FeatureType.Categorical())) {
                 nodeInfo.featureType = "Categorical";
             }
             if (split.featureType().equals(FeatureType.Continuous())) {
                 nodeInfo.featureType = "Continuous";
             }
-            nodeInfo.categories = (List<Double>) (Object) split.categories();        
+
+            List<Double> categories = (List<Double>) (Object) JavaConversions.seqAsJavaList(split.categories());
+
         }
         nodeInfo.predict = node.predict().predict();
         nodeInfo.probability = node.predict().prob();
@@ -98,8 +113,8 @@ public class RandomForestBridge {
         }
 
         DecisionTreeModel[] decisionTreeModels = randomForestModel.trees();
-        for(int i = 0; i < decisionTreeModels.length; i++) {
-            randomForestInfo.trees.add(visitTree(decisionTreeModels[i]));
+        for(DecisionTreeModel i : decisionTreeModels) {
+            randomForestInfo.trees.add(visitTree(i));
         }
         return randomForestInfo;
     }
@@ -108,7 +123,7 @@ public class RandomForestBridge {
         if (nodeInfo.isLeaf) 
             return nodeInfo.predict;
         else {
-            if (nodeInfo.featureType == "Continuous") {
+            if (nodeInfo.featureType.equals("Continuous")) {
                 if (input[nodeInfo.feature] <= nodeInfo.threshold)
                     return predictNode(treeInfo.nodeInfo.get(treeInfo.leftChildMap.get(nodeInfo.id)), input, treeInfo);
                 else 
@@ -128,10 +143,10 @@ public class RandomForestBridge {
     }
 
     private double predictForest(RandomForestInfo randomForestInfo, double[] input) {
-        if (randomForestInfo.algorithm == "Classification") {
+        if (randomForestInfo.algorithm.equals("Classification")) {
             HashMap<Double, Integer> votes = new HashMap<Double, Integer>();
-            for(int i = 0; i < randomForestInfo.trees.size(); i++) {
-                double candidate = predictTree(randomForestInfo.trees.get(i), input);
+            for(TreeInfo i : randomForestInfo.trees) {
+                double candidate = predictTree(i, input);
                 int vote_count = 0;                
                 if (votes.get(candidate) != null)
                     vote_count = votes.get(candidate);
@@ -140,7 +155,7 @@ public class RandomForestBridge {
             int maxVotes = 0;
             double maxVotesCandidate = 0;
             for(Map.Entry<Double, Integer> entry : votes.entrySet()) {
-                if (entry.getValue() > maxVotes) {
+                if (entry.getValue() >= maxVotes) {
                     maxVotes = entry.getValue();
                     maxVotesCandidate = entry.getKey();
                 }
@@ -158,12 +173,16 @@ public class RandomForestBridge {
     public String export(RandomForestModel randomForestModel) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         RandomForestInfo randomForestInfo = visitForest(randomForestModel);
-        return mapper.writeValueAsString(randomForestInfo);
+        Gson gson = new Gson();
+        return gson.toJson(randomForestInfo);
+        //return mapper.writeValueAsString(randomForestInfo);
     }
     
     public void load(String rep) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        currRandomForestInfo = mapper.readValue(rep, RandomForestInfo.class);
+        //ObjectMapper mapper = new ObjectMapper();
+        Gson gson = new Gson();
+        currRandomForestInfo = gson.fromJson(rep, RandomForestInfo.class);
+        //currRandomForestInfo = mapper.readValue(rep, RandomForestInfo.class);
     }
     
     public double predict(double[] input) {
