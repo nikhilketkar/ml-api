@@ -16,6 +16,10 @@ import org.apache.spark.mllib.tree.model.RandomForestModel;
 import org.apache.spark.mllib.util.MLUtils;
 import org.junit.Test;
 
+import com.flipkart.fdp.ml.model.LRBridge;
+import com.flipkart.fdp.ml.model.LRModel;
+import com.flipkart.fdp.ml.model.bridge.RandomForestBridge;
+
 public class RandomForestBridgeTest extends SparkTestBase {
 
 	@Test
@@ -35,7 +39,7 @@ public class RandomForestBridgeTest extends SparkTestBase {
 				featureSubsetStrategy, impurity, maxDepth, maxBins, seed);
 
 		RandomForestBridge randomForestBridgeIn = new RandomForestBridge();
-		com.flipkart.mlapi.RandomForest modelDump = randomForestBridgeIn.transform(model);
+		com.flipkart.fdp.ml.model.RandomForest modelDump = randomForestBridgeIn.transform(model);
 
 		List<LabeledPoint> testPoints = data.take(10);
 		for (LabeledPoint i : testPoints) {
@@ -71,7 +75,7 @@ public class RandomForestBridgeTest extends SparkTestBase {
 				featureSubsetStrategy, impurity, maxDepth, maxBins, seed);
 
 		RandomForestBridge randomForestBridgeIn = new RandomForestBridge();
-		com.flipkart.mlapi.RandomForest modelDump = randomForestBridgeIn.transform(model);
+		com.flipkart.fdp.ml.model.RandomForest modelDump = randomForestBridgeIn.transform(model);
 
 		List<LabeledPoint> testPoints = data.collect();
 		for (LabeledPoint i : testPoints) {

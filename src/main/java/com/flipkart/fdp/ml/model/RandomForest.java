@@ -1,4 +1,4 @@
-package com.flipkart.mlapi;
+package com.flipkart.fdp.ml.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class RandomForest {
 	private double regression(double[] input) {
 		double total = 0;
 		for (DecisionTree i : trees) {
-			total += i.predictTree(input);
+			total += i.predict(input);
 		}
 		return total / trees.size();
 	}
@@ -36,7 +36,7 @@ public class RandomForest {
 		int maxVote = 0;
 		double maxVoteKey = -1;
 		for (DecisionTree i : trees) {
-			double label = i.predictTree(input);
+			double label = i.predict(input);
 
 			Integer existingCount = votes.get(label);
 			if (existingCount == null) {

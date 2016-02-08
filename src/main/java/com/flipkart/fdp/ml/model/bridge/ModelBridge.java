@@ -1,4 +1,4 @@
-package com.flipkart.mlapi;
+package com.flipkart.fdp.ml.model.bridge;
 
 public interface ModelBridge<F, T> {
 

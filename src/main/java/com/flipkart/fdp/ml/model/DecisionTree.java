@@ -1,4 +1,4 @@
-package com.flipkart.mlapi;
+package com.flipkart.fdp.ml.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,23 +32,23 @@ public class DecisionTree {
 
 	}
 
-	private double predictNode(DecisionNode node, double[] input) {
+	private double predict(DecisionNode node, double[] input) {
 		if (node.isLeaf)
 			return node.predict;
 		else {
 			boolean visitLeft = node.visitLeft(input[node.feature]);
 			if (visitLeft) {
 				DecisionNode leftChild = nodeInfo.get(leftChildMap.get(node.id));
-				return predictNode(leftChild, input);
+				return predict(leftChild, input);
 			} else {
 				DecisionNode rightChild = nodeInfo.get(rightChildMap.get(node.id));
-				return predictNode(rightChild, input);
+				return predict(rightChild, input);
 			}
 		}
 	}
 
-	public double predictTree(double[] input) {
+	public double predict(double[] input) {
 		DecisionNode node = nodeInfo.get(topNodeID);
-		return predictNode(node, input);
+		return predict(node, input);
 	}
 }

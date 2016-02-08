@@ -1,4 +1,4 @@
-package com.flipkart.mlapi;
+package com.flipkart.fdp.ml.model.bridge;
 
 import java.util.List;
 import java.util.Stack;
@@ -10,7 +10,8 @@ import org.apache.spark.mllib.tree.model.Split;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flipkart.mlapi.DecisionTree.DecisionNode;
+import com.flipkart.fdp.ml.model.DecisionTree;
+import com.flipkart.fdp.ml.model.DecisionTree.DecisionNode;
 
 import scala.collection.JavaConversions;
 

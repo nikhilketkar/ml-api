@@ -1,8 +1,11 @@
-package com.flipkart.mlapi;
+package com.flipkart.fdp.ml.model.bridge;
 
 import org.apache.spark.mllib.tree.configuration.Algo;
 import org.apache.spark.mllib.tree.model.DecisionTreeModel;
 import org.apache.spark.mllib.tree.model.RandomForestModel;
+
+import com.flipkart.fdp.ml.model.DecisionTree;
+import com.flipkart.fdp.ml.model.RandomForest;
 
 public class RandomForestBridge implements ModelBridge<RandomForestModel, RandomForest> {
 
