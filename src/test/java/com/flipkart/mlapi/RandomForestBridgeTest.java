@@ -6,6 +6,9 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 
+import org.apache.spark.mllib.classification.LogisticRegressionModel;
+import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS;
+import org.apache.spark.mllib.classification.LogisticRegressionWithSGD;
 import org.apache.spark.mllib.linalg.Vector;
 import scala.Tuple2;
 
@@ -66,6 +69,7 @@ public class RandomForestBridgeTest extends TestCase {
             Vector v = i.features();
             double actual = model.predict(v);
             double predicted = randomForestBridgeOut.predict(v.toArray());
+            System.out.println(actual + "  -- " + predicted);
             assertEquals(actual, predicted);
         }
 
@@ -93,7 +97,29 @@ public class RandomForestBridgeTest extends TestCase {
             Vector v = i.features();
             double actual = model.predict(v);
             double predicted = randomForestBridgeOut.predict(v.toArray());
+            System.out.println(actual + "  -- " + predicted);
             assertEquals(actual, predicted);
         }
+
+        datapath = "src/test/resources/binary_classification_test.libsvm";
+        data = MLUtils.loadLibSVMFile(sc.sc(), datapath).toJavaRDD();
+        LogisticRegressionModel lrmodel = new LogisticRegressionWithSGD().run(data.rdd());
+        LogisticRegressionBridge logisticRegressionBridgeIn = new LogisticRegressionBridge();
+
+        modelDump = logisticRegressionBridgeIn.export(lrmodel);
+
+        LogisticRegressionBridge logisticRegressionBridgeOut = new LogisticRegressionBridge();
+        logisticRegressionBridgeOut.load(modelDump);
+
+        lrmodel.clearThreshold();
+        testPoints = data.collect();
+        for(LabeledPoint i : testPoints) {
+            Vector v = i.features();
+            double actual = lrmodel.predict(v);
+            double predicted = logisticRegressionBridgeOut.predict(v.toArray());
+            System.out.println(actual + "  -- " + predicted);
+            assertEquals(actual, predicted);
+        }
+
     }
 }

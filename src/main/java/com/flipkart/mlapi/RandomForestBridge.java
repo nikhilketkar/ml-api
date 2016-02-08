@@ -14,11 +14,9 @@ import org.apache.spark.mllib.tree.model.RandomForestModel;
 import org.apache.spark.mllib.tree.configuration.Algo;
 import org.apache.spark.mllib.tree.configuration.FeatureType;
 import org.apache.spark.mllib.tree.model.Split;
-import org.codehaus.jackson.annotate.JsonCreator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;    
 import com.fasterxml.jackson.core.JsonProcessingException;
-import scala.collection.immutable.Range;
 import scala.collection.JavaConversions;
 
 public class RandomForestBridge {
@@ -175,14 +173,11 @@ public class RandomForestBridge {
         RandomForestInfo randomForestInfo = visitForest(randomForestModel);
         Gson gson = new Gson();
         return gson.toJson(randomForestInfo);
-        //return mapper.writeValueAsString(randomForestInfo);
     }
     
     public void load(String rep) throws IOException {
-        //ObjectMapper mapper = new ObjectMapper();
         Gson gson = new Gson();
         currRandomForestInfo = gson.fromJson(rep, RandomForestInfo.class);
-        //currRandomForestInfo = mapper.readValue(rep, RandomForestInfo.class);
     }
     
     public double predict(double[] input) {
