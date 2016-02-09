@@ -1,4 +1,4 @@
-package com.flipkart.fdp.ml.model.bridge;
+package com.flipkart.fdp.ml.model.adapter;
 
 import java.util.List;
 import java.util.Stack;
@@ -15,8 +15,8 @@ import com.flipkart.fdp.ml.model.DecisionTree.DecisionNode;
 
 import scala.collection.JavaConversions;
 
-public class DecisionTreeBridge implements ModelBridge<DecisionTreeModel, DecisionTree> {
-	private static final Logger LOG = LoggerFactory.getLogger(DecisionTreeBridge.class);
+public class DTreeAdapter implements ModelAdapter<DecisionTreeModel, DecisionTree> {
+	private static final Logger LOG = LoggerFactory.getLogger(DTreeAdapter.class);
 
 	private void visit(Node node, Stack<Node> nodesToVisit, DecisionTree treeInfo) {
 		DecisionNode nodeInfo = new DecisionNode();
@@ -54,7 +54,7 @@ public class DecisionTreeBridge implements ModelBridge<DecisionTreeModel, Decisi
 	public DecisionTree transform(DecisionTreeModel decisionTreeModel) {
 		DecisionTree treeInfo = new DecisionTree();
 		Node node = decisionTreeModel.topNode();
-		treeInfo.topNodeID = node.id();
+		treeInfo.root = node.id();
 		Stack<Node> nodesToVisit = new Stack<>();
 		nodesToVisit.push(node);
 		while (!nodesToVisit.empty()) {

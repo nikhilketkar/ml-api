@@ -1,4 +1,4 @@
-package com.flipkart.fdp.ml.model.bridge;
+package com.flipkart.fdp.ml.model.adapter;
 
 import org.apache.spark.mllib.tree.configuration.Algo;
 import org.apache.spark.mllib.tree.model.DecisionTreeModel;
@@ -7,9 +7,9 @@ import org.apache.spark.mllib.tree.model.RandomForestModel;
 import com.flipkart.fdp.ml.model.DecisionTree;
 import com.flipkart.fdp.ml.model.RandomForest;
 
-public class RandomForestBridge implements ModelBridge<RandomForestModel, RandomForest> {
+public class RFAdapter implements ModelAdapter<RandomForestModel, RandomForest> {
 
-	private DecisionTreeBridge bridge = new DecisionTreeBridge();
+	private DTreeAdapter bridge = new DTreeAdapter();
 
 	private RandomForest visitForest(RandomForestModel randomForestModel) {
 		RandomForest randomForest = new RandomForest();

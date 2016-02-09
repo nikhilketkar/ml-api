@@ -16,9 +16,12 @@ import org.apache.spark.mllib.tree.model.RandomForestModel;
 import org.apache.spark.mllib.util.MLUtils;
 import org.junit.Test;
 
-import com.flipkart.fdp.ml.model.LRBridge;
 import com.flipkart.fdp.ml.model.LRModel;
-import com.flipkart.fdp.ml.model.bridge.RandomForestBridge;
+import com.flipkart.fdp.ml.model.adapter.LRAdapter;
+import com.flipkart.fdp.ml.model.adapter.RFAdapter;
+import com.flipkart.fdp.ml.predictors.LRPredictor;
+import com.flipkart.fdp.ml.predictors.Predictor;
+import com.flipkart.fdp.ml.predictors.RFPredictor;
 
 public class RandomForestBridgeTest extends SparkTestBase {
 
@@ -38,14 +41,14 @@ public class RandomForestBridgeTest extends SparkTestBase {
 		RandomForestModel model = RandomForest.trainClassifier(data, numClasses, categoricalFeaturesInfo, numTrees,
 				featureSubsetStrategy, impurity, maxDepth, maxBins, seed);
 
-		RandomForestBridge randomForestBridgeIn = new RandomForestBridge();
-		com.flipkart.fdp.ml.model.RandomForest modelDump = randomForestBridgeIn.transform(model);
-
+		RFAdapter randomForestBridgeIn = new RFAdapter();
+		com.flipkart.fdp.ml.model.RandomForest rfModel = randomForestBridgeIn.transform(model);
+		RFPredictor rfPredictor = new RFPredictor(rfModel);
 		List<LabeledPoint> testPoints = data.take(10);
 		for (LabeledPoint i : testPoints) {
 			Vector v = i.features();
 			double actual = model.predict(v);
-			double predicted = modelDump.predict(v.toArray());
+			double predicted = rfPredictor.predict(v.toArray());
 			System.out.println(actual + "  -- " + predicted);
 			assertEquals(actual, predicted, 0.01);
 		}
@@ -74,14 +77,15 @@ public class RandomForestBridgeTest extends SparkTestBase {
 		RandomForestModel model = RandomForest.trainRegressor(data, categoricalFeaturesInfo, numTrees,
 				featureSubsetStrategy, impurity, maxDepth, maxBins, seed);
 
-		RandomForestBridge randomForestBridgeIn = new RandomForestBridge();
-		com.flipkart.fdp.ml.model.RandomForest modelDump = randomForestBridgeIn.transform(model);
+		RFAdapter randomForestBridgeIn = new RFAdapter();
+		com.flipkart.fdp.ml.model.RandomForest rfModel = randomForestBridgeIn.transform(model);
+		RFPredictor rfPredictor = new RFPredictor(rfModel);
 
 		List<LabeledPoint> testPoints = data.collect();
 		for (LabeledPoint i : testPoints) {
 			Vector v = i.features();
 			double actual = model.predict(v);
-			double predicted = modelDump.predict(v.toArray());
+			double predicted = rfPredictor.predict(v.toArray());
 			System.out.println(actual + "  -- " + predicted);
 			assertEquals(actual, predicted, 0.01);
 		}
@@ -92,16 +96,16 @@ public class RandomForestBridgeTest extends SparkTestBase {
 		String datapath = "src/test/resources/binary_classification_test.libsvm";
 		JavaRDD<LabeledPoint> data = MLUtils.loadLibSVMFile(sc.sc(), datapath).toJavaRDD();
 		LogisticRegressionModel lrmodel = new LogisticRegressionWithSGD().run(data.rdd());
-		LRBridge logisticRegressionBridgeIn = new LRBridge();
+		LRAdapter logisticRegressionBridgeIn = new LRAdapter();
 
 		LRModel lrModel = logisticRegressionBridgeIn.transform(lrmodel);
-
+		LRPredictor predictor = new LRPredictor(lrModel);
 		lrmodel.clearThreshold();
 		List<LabeledPoint> testPoints = data.collect();
 		for (LabeledPoint i : testPoints) {
 			Vector v = i.features();
 			double actual = lrmodel.predict(v);
-			double predicted = lrModel.predict(v.toArray());
+			double predicted = predictor.predict(v.toArray());
 			System.out.println(actual + "  -- " + predicted);
 			assertEquals(actual, predicted, 0.01);
 		}

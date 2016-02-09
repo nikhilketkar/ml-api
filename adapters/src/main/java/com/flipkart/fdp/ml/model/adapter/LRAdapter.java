@@ -1,13 +1,13 @@
-package com.flipkart.fdp.ml.model;
+package com.flipkart.fdp.ml.model.adapter;
 
 import org.apache.spark.mllib.classification.LogisticRegressionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flipkart.fdp.ml.model.bridge.ModelBridge;
+import com.flipkart.fdp.ml.model.LRModel;
 
-public class LRBridge implements ModelBridge<LogisticRegressionModel, LRModel> {
-	private static final Logger LOG = LoggerFactory.getLogger(LRBridge.class);
+public class LRAdapter implements ModelAdapter<LogisticRegressionModel, LRModel> {
+	private static final Logger LOG = LoggerFactory.getLogger(LRAdapter.class);
 
 	@Override
 	public LRModel transform(LogisticRegressionModel sparkLRModel) {
