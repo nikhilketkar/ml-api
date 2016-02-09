@@ -11,7 +11,7 @@
 	</parent>
 
   <artifactId>adapters</artifactId>
-  <version>${parent.version}</version>
+  <version>${project.parent.version}</version>
   <packaging>jar</packaging>
 
   <name>Spark Model Adapters</name>
@@ -27,8 +27,8 @@
   <dependencies>
    <dependency>
                 <artifactId>models</artifactId>
-                <groupId>com.flipkart.fdp.ml</groupId>
-                <version>${parent.version}</version>
+                <groupId>${project.parent.groupId}</groupId>
+                <version>${project.parent.version}</version>
    </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>

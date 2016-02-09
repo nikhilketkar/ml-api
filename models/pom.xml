@@ -11,7 +11,7 @@
         </parent>
 
   <artifactId>models</artifactId>
-  <version>${parent.version}</version>
+  <version>${project.parent.version}</version>
   <packaging>jar</packaging>
 
 	<name>Custom Models</name>
