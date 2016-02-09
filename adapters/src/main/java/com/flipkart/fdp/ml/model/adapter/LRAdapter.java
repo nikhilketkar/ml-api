@@ -19,4 +19,14 @@ public class LRAdapter implements ModelAdapter<LogisticRegressionModel, LRModel>
 		return lrModel;
 	}
 
+	@Override
+	public Class<LogisticRegressionModel> getSource() {
+		return LogisticRegressionModel.class;
+	}
+
+	@Override
+	public Class<LRModel> getTarget() {
+		return LRModel.class;
+	}
+
 }

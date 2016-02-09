@@ -33,4 +33,14 @@ public class RFAdapter implements ModelAdapter<RandomForestModel, RandomForest> 
 		RandomForest randomForestInfo = visitForest(from);
 		return randomForestInfo;
 	}
+
+	@Override
+	public Class<RandomForestModel> getSource() {
+		return RandomForestModel.class;
+	}
+
+	@Override
+	public Class<RandomForest> getTarget() {
+		return RandomForest.class;
+	}
 }

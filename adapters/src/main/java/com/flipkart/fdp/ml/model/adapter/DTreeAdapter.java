@@ -63,4 +63,14 @@ public class DTreeAdapter implements ModelAdapter<DecisionTreeModel, DecisionTre
 		}
 		return treeInfo;
 	}
+
+	@Override
+	public Class<DecisionTreeModel> getSource() {
+		return DecisionTreeModel.class;
+	}
+
+	@Override
+	public Class<DecisionTree> getTarget() {
+		return DecisionTree.class;
+	}
 }
